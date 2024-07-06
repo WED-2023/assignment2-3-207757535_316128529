@@ -59,7 +59,26 @@ async function getRecipePreviewByID(recipe_id) {
         
     }
 }
-
+async function getRecipePreviewsByIDs(recipe_ids) {
+    try {
+      const recipePreviews = await Promise.all(recipe_ids.map(id => getRecipePreviewByID(id)));
+      return recipePreviews;
+    } catch (error) {
+      console.error(`Error fetching recipe previews:`, error);
+      throw error;
+    }
+  }
+  
+  async function getRecipePreviewsByIDs(recipe_ids) {
+    try {
+      const recipePreviews = await Promise.all(recipe_ids.map(id => getRecipePreviewByID(id)));
+      return recipePreviews;
+    } catch (error) {
+      console.error(`Error fetching recipe previews:`, error);
+      throw error;
+    }
+  }
+  
 async function getRecipeFullDetailsByID(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions  } = recipe_info.data;
@@ -105,7 +124,7 @@ async function getRecipeFullDetailsByID(recipe_id) {
     
         return recipePreviews;
     }
-
+exports.getRecipePreviewsByIDs = getRecipePreviewsByIDs
 exports.searchRecipePreview = searchRecipePreview
 exports.getRandomRecipePreview = getRandomRecipePreview;
 exports.getRecipeFullDetailsByID = getRecipeFullDetailsByID;
