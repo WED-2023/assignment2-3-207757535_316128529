@@ -28,22 +28,33 @@ async function insertRecipe(username, title, readyInMinutes, image, aggregateLik
       where username ='${username}'`;
   
     // Execute the query with the provided username
-    const results = await DButils.execQuery(query);
-    return results;
-  }
+    const recipes = await DButils.execQuery(query);
+    return recipes;
+}
 
   async function getRecipeById(recipe_id) {
-    // Prepare the SQL query
-    const query = `
-      SELECT *
-      FROM myrecipes
-      WHERE recipe_id = '${recipe_id}'
-    `;
-  
-    // Execute the query with the provided recipe_id
-    const results = await DButils.execQuery(query);
-    return results.length > 0 ? results[0] : null; // Return the recipe if found, otherwise return null
-  }
+        // Prepare the SQL query
+        const query = `
+          SELECT *,
+            JSON_UNQUOTE(JSON_EXTRACT(extendedIngredients, '$')) AS extendedIngredients,
+            JSON_UNQUOTE(JSON_EXTRACT(analyzedInstructions, '$')) AS analyzedInstructions
+          FROM myrecipes
+          WHERE recipe_id = ${recipe_id}`;
+        
+        // Execute the query
+        const recipes = await DButils.execQuery(query);
+      
+        if (recipes.length === 0) {
+          throw new Error(`Recipe with ID ${recipe_id} not found`);
+        }
+      
+        // Parse JSON fields
+        const recipe = recipes[0];
+        recipe.extendedIngredients = JSON.parse(recipe.extendedIngredients);
+        recipe.analyzedInstructions = JSON.parse(recipe.analyzedInstructions);
+      
+        return recipe;
+      }
 
 
 exports.getRecipeById = getRecipeById
