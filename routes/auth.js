@@ -6,9 +6,7 @@ const bcrypt = require("bcrypt");
 
 router.post("/Register", async (req, res, next) => {
   try {
-    // parameters exists
-    // valid parameters
-    // username exists
+
     let user_details = {
       user_name: req.body.username,
       first_name: req.body.firstname,
@@ -17,13 +15,7 @@ router.post("/Register", async (req, res, next) => {
       password: req.body.password,
       email: req.body.email,
       profilePic: req.body.profilePic
-      // user_name: "wello",
-      // first_name: "Micha",
-      // last_name: "Napo",
-      // country: "Russia",
-      // password: "1234abc",
-      // email: "abcd",
-      // profilePic: "hhhhh"
+
     }
     let users = [];
     users = await DButils.execQuery("SELECT user_name from users");
