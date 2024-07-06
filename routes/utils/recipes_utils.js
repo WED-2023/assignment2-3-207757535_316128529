@@ -82,7 +82,16 @@ async function getRecipePreviewsByIDs(recipe_ids) {
 async function getRecipeFullDetailsByID(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions  } = recipe_info.data;
+    extendedIngredients = extendedIngredients.map(ingredient => ({
+        name: ingredient.name,
+        amount: ingredient.amount,
+        unit: ingredient.unit
+      }));
+    let steps = analyzedInstructions[0].steps.map(step => ({
+    step: step.step
+  }));
 
+ 
     return {
         id: id,
         title: title,
@@ -93,7 +102,7 @@ async function getRecipeFullDetailsByID(recipe_id) {
         vegetarian: vegetarian,
         glutenFree: glutenFree,
         extendedIngredients: extendedIngredients,
-        analyzedInstructions: analyzedInstructions,
+        analyzedInstructions: steps,
         summary: summary,
     }}
 
