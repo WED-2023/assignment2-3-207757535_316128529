@@ -78,7 +78,6 @@ router.post('/lastViewed/:recipeId', async (req,res,next) => {
     if(recipes_id_array.length === 4){
       recipes_id_array.shift();
     }
-    res.status(201).send("Last viewed recipes " + recipes_id_array[0] + " " + recipes_id_array.length + " " + recipes_id_array.join(", ") + " updated");
     await user_utils.updateLastViewedRecipe(recipes_id_array, user_id);
     res.status(200).send("Last viewed recipes updated");
   } catch(error){
