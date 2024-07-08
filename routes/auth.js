@@ -8,9 +8,9 @@ router.post("/Register", async (req, res, next) => {
   try {
 
     let user_details = {
-      user_name: req.body.username,
-      first_name: req.body.firstname,
-      last_name: req.body.lastname,
+      user_name: req.body.user_name,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
       country: req.body.country,
       password: req.body.password,
       email: req.body.email,
@@ -19,11 +19,11 @@ router.post("/Register", async (req, res, next) => {
     }
     let users = [];
     users = await DButils.execQuery("SELECT user_name from users");
-    console.log(users)
+    console.log(users.user_name)
     if (users.find((x) => x.user_name === user_details.user_name))
       throw { status: 409, message: "Username taken" };
 
-    // add the new username
+    else{// add the new username
     let hash_password = bcrypt.hashSync(
       user_details.password,
       parseInt(process.env.bcrypt_saltRounds)
@@ -31,24 +31,31 @@ router.post("/Register", async (req, res, next) => {
     await DButils.execQuery(
       `INSERT INTO users VALUES ('${user_details.user_name}', '${user_details.first_name}', '${user_details.last_name}', '${user_details.country}', '${hash_password}', '${user_details.email}')`
     );
-    res.status(201).send({ message: "user created", success: true });
+    res.status(201).send({ message: "user created", success: true });}
   } catch (error) {
-    next(error);
-  }
-});
+    console.error("Registration error:", error);
+
+    if (error.status === 409) {
+      res.status(409).send({ message: error.message });
+    } else {
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  
+}});
 
 
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
     const users = await DButils.execQuery("SELECT user_name FROM users");
-    if (!users.find((x) => x.user_name === req.body.username))
-      throw { status: 401, message: "Username or Password incorrect"};
+    if (!users.find((x) => x.user_name === req.body.user_name))
+
+      throw { status: 401, message: "Username incorrect"};
 
     // check that the password is correct
     const user = (
       await DButils.execQuery(
-        `SELECT * FROM users WHERE user_name = '${req.body.username}'`
+        `SELECT * FROM users WHERE user_name = '${req.body.user_name}'`
       )
     )[0];
     if (!bcrypt.compareSync(req.body.password, user.user_password)) {

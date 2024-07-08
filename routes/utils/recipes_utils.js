@@ -107,22 +107,28 @@ async function getRecipeFullDetailsByID(recipe_id) {
     }}
 
     async function getRandomRecipePreview(number) {
-        let recipes_info = await getRandomRecipes(number);
-        let recipes = recipes_info.data.recipes;
+        try {
+            let recipes_info = await getRandomRecipes(number);
+            let recipes = recipes_info.data.recipes;
     
-        return recipes.map(recipe => {
-            let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe;
-            return {
-                id: id,
-                title: title,
-                readyInMinutes: readyInMinutes,
-                image: image,
-                popularity: aggregateLikes,
-                vegan: vegan,
-                vegetarian: vegetarian,
-                glutenFree: glutenFree,
-            };
-        });}
+            // Map each recipe to extract relevant information
+            let recipePreviews = recipes.map(recipe => ({
+                id: recipe.id,
+                title: recipe.title,
+                readyInMinutes: recipe.readyInMinutes,
+                image: recipe.image,
+                aggregateLikes: recipe.aggregateLikes,
+                vegan: recipe.vegan,
+                vegetarian: recipe.vegetarian,
+                glutenFree: recipe.glutenFree,
+            }));
+    
+            return recipePreviews;
+        } catch (error) {
+            console.error(`Error fetching random recipe previews:`, error);
+            throw error;
+        }
+    }
 
 
     async function searchRecipePreview(query, cuisine, diet, intolerances, sort, number) {

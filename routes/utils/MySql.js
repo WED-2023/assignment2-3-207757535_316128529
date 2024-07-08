@@ -6,7 +6,7 @@ const config={
 connectionLimit:4,
   host: 'localhost',//"localhost"
   user: 'root',//"root"
-  password: "2",
+  password: "2721997Dz!",
   database:"recipes_website",
   port: 3306
 }

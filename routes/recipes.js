@@ -31,7 +31,8 @@ router.get("/fullDetaile/:recipeId", async (req, res, next) => {
 
 router.get("/random", async (req, res, next) => {
   try {
-    const recipe = await recipes_utils.getRandomRecipePreview(req.params.number);
+    const recipe = await recipes_utils.getRandomRecipePreview(req.query.number);
+    console.log(req.params.number)
     res.send(recipe);
   } catch (error) {
     next(error);
