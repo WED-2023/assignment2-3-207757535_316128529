@@ -7,18 +7,18 @@ const recipe_utils = require("./utils/recipes_utils");
 /**
  * Authenticate all incoming requests by middleware
  */
-router.use(async function (req, res, next) {
-  if (req.session && req.session.user_id) {
-    DButils.execQuery("SELECT user_name FROM users").then((users) => {
-      if (users.find((x) => x.user_name === req.session.user_id)) {
-        req.user_id = req.session.user_id;
-        next();
-      }
-    }).catch(err => next(err));
-  } else {
-    res.sendStatus(401);
-  }
-});
+// router.use(async function (req, res, next) {
+//   if (req.session && req.session.user_id) {
+//     DButils.execQuery("SELECT user_name FROM users").then((users) => {
+//       if (users.find((x) => x.user_name === req.session.user_id)) {
+//         req.user_id = req.session.user_id;
+//         next();
+//       }
+//     }).catch(err => next(err));
+//   } else {
+//     res.sendStatus(401);
+//   }
+// });
 
 
 /**
@@ -69,12 +69,12 @@ router.get('/lastViewed', async (req,res,next) => {
   }
 });
 
-router.post('/lastViewed/:recipeId', async (req,res,next) => {
+router.post("/lastViewed", async (req,res,next) => {
   try{
-    const user_id = req.session.user_id;
+    const user_id = req.body.user_id;
     let recipes_id_array = [];
     recipes_id_array = await user_utils.getLastViewedRecipes(user_id);
-    recipes_id_array.push(req.params.recipeId);
+    recipes_id_array.push(req.body.recipe_id);
     if(recipes_id_array.length === 4){
       recipes_id_array.shift();
     }

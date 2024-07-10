@@ -117,12 +117,13 @@ async function getRecipeFullDetailsByID(recipe_id) {
                 title: title,
                 readyInMinutes: readyInMinutes,
                 image: image,
-                popularity: aggregateLikes,
+                aggregateLikes: aggregateLikes,
                 vegan: vegan,
                 vegetarian: vegetarian,
                 glutenFree: glutenFree,
             };
-        });}
+        });
+    }
 
 
     async function searchRecipePreview(query, cuisine, diet, intolerances, sort, number) {
