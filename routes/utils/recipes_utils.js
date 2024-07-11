@@ -56,13 +56,14 @@ async function getRecipePreviewByID(recipe_id) {
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree,
-        
     }
 }
 async function getRecipePreviewsByIDs(recipe_ids) {
     try {
-      const recipePreviews = await Promise.all(recipe_ids.map(id => getRecipePreviewByID(id)));
-      return recipePreviews;
+        const recipesPreviews = await Promise.all(recipe_ids.map(async (recipe_id) => {
+            return await getRecipePreviewByID(recipe_id);
+        }));
+        return recipesPreviews;
     } catch (error) {
       console.error(`Error fetching recipe previews:`, error);
       throw error;

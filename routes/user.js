@@ -16,7 +16,7 @@ router.use(async function (req, res, next) {
       }
     }).catch(err => next(err));
   } else {
-    res.status(401).send("The Recipe successfully saved as favorite req session " +  req.session + "req session id" + req.session.user_id);
+    res.status(401);
   }
 });
 
@@ -40,12 +40,11 @@ router.post('/favorites', async (req,res,next) => {
  */
 router.get('/favorites', async (req,res,next) => {
   try{
-    const user_id = req.body.user_name;
+    const user_id = req.session.user_id;
     const recipes_id = await user_utils.getFavoriteRecipes(user_id);
-    let recipes_id_array = [];
-    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_array);
-    res.status(200).send(results);
+    let recipes_id_array = recipes_id.map(element => element.recipe_id);
+    const results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_array);
+    res.status(200).send({ recipes: results, status: 200, success: true });
   } catch(error){
     next(error); 
   }
@@ -55,14 +54,14 @@ router.get('/lastViewed', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipes_id = await user_utils.getLastViewedRecipes(user_id);
-    let recipes_id_array = [];
+    let recipes_id_int_array = [];
     if (recipes_id.length > 0) {
-      const recipes_id_string = recipes_id[0].last_three_recipes;
-      recipes_id_array = recipes_id_string.split(',');
+      const recipes_id_string_array = recipes_id.map(id => id.toString());
+      recipes_id_int_array = recipes_id_string_array.map(str => parseInt(str, 10));
     }
     let results = [];
-    results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_array);
-    res.status(200).send(results);
+    results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_int_array);
+    res.status(200).send({ recipes: results, status: 200, success: true });
   } catch(error){
     next(error);
   }
