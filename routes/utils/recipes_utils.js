@@ -69,15 +69,6 @@ async function getRecipePreviewsByIDs(recipe_ids) {
     }
   }
   
-  async function getRecipePreviewsByIDs(recipe_ids) {
-    try {
-      const recipePreviews = await Promise.all(recipe_ids.map(id => getRecipePreviewByID(id)));
-      return recipePreviews;
-    } catch (error) {
-      console.error(`Error fetching recipe previews:`, error);
-      throw error;
-    }
-  }
   
 async function getRecipeFullDetailsByID(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);

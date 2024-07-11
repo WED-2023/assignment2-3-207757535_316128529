@@ -55,7 +55,7 @@ router.post("/Login", async (req, res, next) => {
       )
     )[0];
     if (!bcrypt.compareSync(req.body.password, user.user_password)) {
-      throw { status: 401, message: "Username or Password incorrect" };
+      throw { status: 401, message: "Username or Password incorrect"};
     }
     // Set cookie
     req.session.user_id = user.user_name;
