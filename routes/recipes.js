@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 const recipes_utils = require("./utils/recipes_utils");
 
+const user_utils = require("./utils/user_utils");
+
 router.get("/", (req, res) => res.send("im here"));
 
 
@@ -31,12 +33,12 @@ router.get("/fullDetaile/:recipeId", async (req, res, next) => {
 
 router.get("/random", async (req, res, next) => {
   try {
-    const recipe = await recipes_utils.getRandomRecipePreview(req.query.number);
-    console.log(req.params.number)
-    res.send(recipe);
+    const recipes = await recipes_utils.getRandomRecipePreview(req.query.number);
+    const isViewed = await user_utils.getViewedRecipes(req.session.user_id, recipes);
+    res.status(200).send({ randomRecipes: recipes, viewed: isViewed, status: 200, success: true });
   } catch (error) {
     next(error);
-  }
+}
 });
 
 router.get("/search", async (req, res, next) => {

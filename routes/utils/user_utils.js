@@ -15,8 +15,8 @@ const recipes_id = await DButils.execQuery(`SELECT recipe_id FROM favoriterecipe
 return recipes_id;
 }
 
-async function getLastViewedRecipes(user_id){
-const recipes_id = await DButils.execQuery(`SELECT last_three_recipes FROM lastviewedrecipes WHERE user_name='${user_id}'`);
+async function getLastThreeViewedRecipes(user_id){
+const recipes_id = await DButils.execQuery(`SELECT last_three_recipes FROM lastthreeviewedrecipes WHERE user_name='${user_id}'`);
 let recipes_id_array = [];
 if (recipes_id.length > 0) {
   const recipes_id_string = recipes_id[0].last_three_recipes;
@@ -27,11 +27,11 @@ return recipes_id_array;
 
 async function updateLastViewedRecipe(recipes_id_array, user_id){
 if (recipes_id_array.length === 1) {
-await DButils.execQuery(`INSERT INTO lastviewedrecipes VALUES ('${user_id}','${recipes_id_array.join(", ")}')`);
+await DButils.execQuery(`INSERT INTO lastthreeviewedrecipes VALUES ('${user_id}','${recipes_id_array.join(", ")}')`);
 
 }
 else{
-await DButils.execQuery(`UPDATE lastviewedrecipes SET last_three_recipes='${recipes_id_array.join(", ")}' WHERE user_name='${user_id}'`);
+await DButils.execQuery(`UPDATE lastthreeviewedrecipes SET last_three_recipes='${recipes_id_array.join(", ")}' WHERE user_name='${user_id}'`);
 }
 }
 
@@ -54,6 +54,21 @@ async function insertRecipe(username, title, readyInMinutes, image, aggregateLik
     // Execute the query with the provided username
     const recipes = await DButils.execQuery(query);
     return recipes;
+}
+async function getViewedRecipes(user_id, recipes_id){
+  let viewed_array = [];
+  const recipes_id_array = recipes_id.map(element => element.id);
+  let user_viewed = null;
+  for (let i = 0; i < recipes_id_array.length; i++){
+     user_viewed = await DButils.execQuery(`SELECT * FROM lastviewedrecipes WHERE user_name='${user_id}' AND recipe_id='${recipes_id_array[i]}'`);
+     if(user_viewed.length === 1){
+      viewed_array[i] = true;
+     }
+     else{
+      viewed_array[i] = false;
+     }
+  }
+  return viewed_array;
 }
 
   async function getRecipeById(recipe_id) {
@@ -79,12 +94,22 @@ async function insertRecipe(username, title, readyInMinutes, image, aggregateLik
       
         return recipe;
       }
+      async function justWatched(recipe_id, user_id){
+        const viewed = await DButils.execQuery(`SELECT * FROM lastviewedrecipes WHERE user_name='${user_id}' AND recipe_id='${recipe_id}'`);
+        if(viewed.length === 1){
+          return;
+        }
+        else{
+          await DButils.execQuery(`INSERT INTO lastviewedrecipes VALUES ('${user_id}','${recipe_id}')`);
+      }}
 
 
+exports.getViewedRecipes = getViewedRecipes;
+exports.getLastThreeViewedRecipes = getLastThreeViewedRecipes;
+exports.justWatched = justWatched;
 exports.getRecipeById = getRecipeById
 exports.getAllRecipesByUsername = getAllRecipesByUsername
 exports.insertRecipe = insertRecipe  
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
-exports.getLastViewedRecipes = getLastViewedRecipes;
 exports.updateLastViewedRecipe = updateLastViewedRecipe;
