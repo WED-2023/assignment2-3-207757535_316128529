@@ -52,36 +52,28 @@ async function getRecipePreviewByID(recipe_id) {
         title: title,
         readyInMinutes: readyInMinutes,
         image: image,
-        popularity: aggregateLikes,
+        aggregateLikes: aggregateLikes,
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree,
-        
     }
 }
 async function getRecipePreviewsByIDs(recipe_ids) {
     try {
-      const recipePreviews = await Promise.all(recipe_ids.map(id => getRecipePreviewByID(id)));
-      return recipePreviews;
+        const recipesPreviews = await Promise.all(recipe_ids.map(async (recipe_id) => {
+            return await getRecipePreviewByID(recipe_id);
+        }));
+        return recipesPreviews;
     } catch (error) {
       console.error(`Error fetching recipe previews:`, error);
       throw error;
     }
   }
   
-  async function getRecipePreviewsByIDs(recipe_ids) {
-    try {
-      const recipePreviews = await Promise.all(recipe_ids.map(id => getRecipePreviewByID(id)));
-      return recipePreviews;
-    } catch (error) {
-      console.error(`Error fetching recipe previews:`, error);
-      throw error;
-    }
-  }
   
 async function getRecipeFullDetailsByID(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
-    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions  } = recipe_info.data;
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions, servings  } = recipe_info.data;
     extendedIngredients = extendedIngredients.map(ingredient => ({
         name: ingredient.name,
         amount: ingredient.amount,
@@ -104,6 +96,7 @@ async function getRecipeFullDetailsByID(recipe_id) {
         extendedIngredients: extendedIngredients,
         analyzedInstructions: steps,
         summary: summary,
+        servings: servings,
     }}
 
     async function getRandomRecipePreview(number) {
@@ -111,6 +104,7 @@ async function getRecipeFullDetailsByID(recipe_id) {
             let recipes_info = await getRandomRecipes(number);
             let recipes = recipes_info.data.recipes;
     
+<<<<<<< HEAD
             // Map each recipe to extract relevant information
             let recipePreviews = recipes.map(recipe => ({
                 id: recipe.id,
@@ -128,6 +122,21 @@ async function getRecipeFullDetailsByID(recipe_id) {
             console.error(`Error fetching random recipe previews:`, error);
             throw error;
         }
+=======
+        return recipes.map(recipe => {
+            let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe;
+            return {
+                id: id,
+                title: title,
+                readyInMinutes: readyInMinutes,
+                image: image,
+                aggregateLikes: aggregateLikes,
+                vegan: vegan,
+                vegetarian: vegetarian,
+                glutenFree: glutenFree,
+            };
+        });
+>>>>>>> Dvir
     }
 
 
