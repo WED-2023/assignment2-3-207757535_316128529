@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 
 router.post("/Register", async (req, res, next) => {
   try {
+
     let user_details = {
       user_name: req.body.user_name,
       first_name: req.body.first_name,
@@ -33,7 +34,6 @@ router.post("/Register", async (req, res, next) => {
     res.status(201).send({ message: "user created", success: true });}
   } catch (error) {
     console.error("Registration error:", error);
-<<<<<<< HEAD
 
     if (error.status === 409) {
       res.status(409).send({ message: error.message });
@@ -42,27 +42,15 @@ router.post("/Register", async (req, res, next) => {
     }
   
 }});
-=======
->>>>>>> Dvir
 
-    if (error.status === 409) {
-      res.status(409).send({ message: error.message });
-    } else {
-      res.status(500).send({ message: "Internal Server Error" });
-}
-}});
 
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
     const users = await DButils.execQuery("SELECT user_name FROM users");
     if (!users.find((x) => x.user_name === req.body.user_name))
-<<<<<<< HEAD
 
       throw { status: 401, message: "Username incorrect"};
-=======
-      throw { status: 401, message: "Username or Password incorrect"};
->>>>>>> Dvir
 
     // check that the password is correct
     const user = (
@@ -71,7 +59,7 @@ router.post("/Login", async (req, res, next) => {
       )
     )[0];
     if (!bcrypt.compareSync(req.body.password, user.user_password)) {
-      throw { status: 401, message: "Username or Password incorrect"};
+      throw { status: 401, message: "Username or Password incorrect" };
     }
     // Set cookie
     req.session.user_id = user.user_name;

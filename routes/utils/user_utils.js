@@ -1,12 +1,12 @@
 const DButils = require("./DButils");
 
+
+
 async function markAsFavorite(user_id, recipe_id){
     let usersFavorites = [];
     usersFavorites = await DButils.execQuery(`SELECT * FROM favoriterecipes`);
-    if(usersFavorites.length > 0){
-      if (usersFavorites.find((x) => x.user_name === user_id && x.recipe_id === recipe_id))
-        throw { status: 409, message: "You allready liked this recipe" };
-    }
+    if (usersFavorites.find((x) => x.user_name === user_id && x.recipe_id === recipe_id))
+      throw { status: 409, message: "You allready liked this recipe" };
     await DButils.execQuery(`INSERT INTO favoriterecipes VALUES ('${user_id}','${recipe_id}')`);
 }
 

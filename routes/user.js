@@ -16,7 +16,7 @@ router.use(async function (req, res, next) {
       }
     }).catch(err => next(err));
   } else {
-    res.status(401);
+    res.sendStatus(401);
   }
 });
 
@@ -24,12 +24,12 @@ router.use(async function (req, res, next) {
 /**
  * This path gets body with recipeId and save this recipe in the favorites list of the logged-in user
  */
-router.post('/favorites', async (req,res,next) => {
+router.post('/favorites/:recipeId', async (req,res,next) => {
   try{
-    const user_id = req.body.user_name;
-    const recipe_id = req.body.recipe_id;
+    const user_id = req.session.user_id;
+    const recipe_id = req.params.recipeId;
     await user_utils.markAsFavorite(user_id,recipe_id);
-    res.status(200).send({ message: "The Recipe successfully saved as favorite", status: 200, success: true } );
+    res.status(200).send("The Recipe successfully saved as favorite");
     } catch(error){
     next(error);
   }
@@ -42,9 +42,11 @@ router.get('/favorites', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipes_id = await user_utils.getFavoriteRecipes(user_id);
-    let recipes_id_array = recipes_id.map(element => element.recipe_id);
-    const results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_array);
-    res.status(200).send({ recipes: results, status: 200, success: true });
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    let results = [];
+    results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_array);
+    res.status(200).send(results);
   } catch(error){
     next(error); 
   }
@@ -54,25 +56,25 @@ router.get('/lastViewed', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipes_id = await user_utils.getLastViewedRecipes(user_id);
-    let recipes_id_int_array = [];
+    let recipes_id_array = [];
     if (recipes_id.length > 0) {
-      const recipes_id_string_array = recipes_id.map(id => id.toString());
-      recipes_id_int_array = recipes_id_string_array.map(str => parseInt(str, 10));
+      const recipes_id_string = recipes_id[0].last_three_recipes;
+      recipes_id_array = recipes_id_string.split(',');
     }
     let results = [];
-    results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_int_array);
-    res.status(200).send({ recipes: results, status: 200, success: true });
+    results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_array);
+    res.status(200).send(results);
   } catch(error){
     next(error);
   }
 });
 
-router.post('/lastViewed', async (req,res,next) => {
+router.post('/lastViewed/:recipeId', async (req,res,next) => {
   try{
-    const user_id = req.body.user_id;
+    const user_id = req.session.user_id;
     let recipes_id_array = [];
     recipes_id_array = await user_utils.getLastViewedRecipes(user_id);
-    recipes_id_array.push(req.body.recipe_id);
+    recipes_id_array.push(req.params.recipeId);
     if(recipes_id_array.length === 4){
       recipes_id_array.shift();
     }

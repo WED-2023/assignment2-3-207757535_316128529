@@ -11,20 +11,19 @@ router.get("/", (req, res) => res.send("im here"));
 router.get("/preview/:recipeId", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.getRecipePreviewByID(req.params.recipeId);
-    res.status(200).send({ recipePreview: recipe, status: 200, success: true });
+    res.send(recipe);
   } catch (error) {
     next(error);
   }
 });
 
-
 /**
  * This path returns a full details of a recipe by its id
  */
-router.get("/fullDetails/:recipeId", async (req, res, next) => {
+router.get("/fullDetaile/:recipeId", async (req, res, next) => {
   try {
-    const recipeDetails = await recipes_utils.getRecipeFullDetailsByID(req.params.recipeId);
-    res.status(200).send({ recipe: recipeDetails, status: 200, success: true });
+    const recipe = await recipes_utils.getRecipeFullDetailsByID(req.params.recipeId);
+    res.send(recipe);
   } catch (error) {
     next(error);
   }
@@ -33,10 +32,7 @@ router.get("/fullDetails/:recipeId", async (req, res, next) => {
 router.get("/random", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.getRandomRecipePreview(req.query.number);
-<<<<<<< HEAD
     console.log(req.params.number)
-=======
->>>>>>> Dvir
     res.send(recipe);
   } catch (error) {
     next(error);
