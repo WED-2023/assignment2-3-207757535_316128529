@@ -18,9 +18,9 @@ return recipes_id;
 async function getLastThreeViewedRecipes(user_id){
   const recipes_id = await DButils.execQuery(`SELECT last_three_recipes FROM lastthreeviewedrecipes WHERE user_name='${user_id}'`);
   let recipes_id_array = [];
-  if (recipes_id.length > 0) {
+  if (recipes_id && recipes_id.length > 0 && recipes_id[0].last_three_recipes) {
     const recipes_id_string = recipes_id[0].last_three_recipes;
-    recipes_id_array = recipes_id_string.split(',');
+    recipes_id_array = recipes_id_string.split(', ');
   }
   return recipes_id_array;
 }

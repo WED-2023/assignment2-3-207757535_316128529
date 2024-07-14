@@ -62,32 +62,11 @@ router.get('/lastViewed', async (req,res,next) => {
     }
     let results = [];
     results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_int_array);
-    // throw { status: 409, message: "You allready liked this recipe " + results +" h" };
     res.status(200).send({ recipes: results, viewed: isViewed, status: 200, success: true });
   } catch(error){
     next(error);
   }
 });
-
-// router.get('/AllTimeViewed', async (req,res,next) => {
-//   try{
-//     const user_id = req.session.user_id;
-//     const recipes_id = await user_utils.getLastThreeViewedRecipes(user_id);
-//     let recipes_id_int_array = [];
-//     if (recipes_id.length > 0) {
-//       const recipes_id_string_array = recipes_id.map(id => id.toString());
-//       recipes_id_int_array = recipes_id_string_array.map(str => parseInt(str, 10));
-//     }
-//     let results = [];
-//     results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_int_array);
-//     // throw { status: 409, message: "You allready liked this recipe " + results +" h" };
-//     res.status(200).send({ recipes: results, status: 200, success: true });
-//   } catch(error){
-//     next(error);
-//   }
-// });
-
-
 
 router.post('/lastViewed', async (req,res,next) => {
   try{
@@ -102,17 +81,21 @@ router.post('/lastViewed', async (req,res,next) => {
       }
       await user_utils.updateLastViewedRecipe(recipes_id_array, user_id);
       await user_utils.justWatched(req.body.recipe_id, user_id);
+      throw { status: 409, message: "You allready " + recipes_id_array.includes(recipe_id_str)   + " liked this recipe" };
+
     }
     else{
       let last_viewed_recipes = [];
-      for (recipe of recipes_id_array){
-        if(recipe != recipe_id_str){
-          last_viewed_recipes.push(recipe);
+      if (recipes_id_array.length > 1){
+        for (recipe of recipes_id_array){
+          if(recipe != recipe_id_str){
+            last_viewed_recipes.push(recipe);
+          }
         }
-      }
       last_viewed_recipes.push(req.body.recipe_id);
       await user_utils.updateLastViewedRecipe(last_viewed_recipes, user_id);
     }
+  }
       res.status(200).send({ message: "The Recipe successfully saved as favorite", status: 200, success: true } );
   } catch(error){
     next(error);
