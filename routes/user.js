@@ -81,7 +81,6 @@ router.post('/lastViewed', async (req,res,next) => {
       }
       await user_utils.updateLastViewedRecipe(recipes_id_array, user_id);
       await user_utils.justWatched(req.body.recipe_id, user_id);
-      throw { status: 409, message: "You allready " + recipes_id_array.includes(recipe_id_str)   + " liked this recipe" };
 
     }
     else{
