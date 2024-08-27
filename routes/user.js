@@ -118,33 +118,44 @@ router.post('/MyRecipes', async (req, res, next) => {
 /**
  * This path returns all recipes created by the logged-in user
  */
-router.get('/MyRecipes', async (req, res, next) => {
-  try {
-    const username = req.session.user_id;
-    const recipes = await user_utils.getAllRecipesByUsername(username);
-    res.status(200).send({ recipes: results, viewed: isViewed, status: 200, success: true });
-  } catch (error) {
-    next(error);
-  }
-});
+// router.get('/MyRecipes', async (req, res, next) => {
+//   try {
+//     const username = req.session.user_id;
+//     const recipes = await user_utils.getAllRecipesByUsername(username);
+//     res.status(200).send({ recipes: results, viewed: isViewed, status: 200, success: true });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 /**
  * This path returns a specific recipe by its ID
  */
+// router.get('/MyRecipes', async (req, res, next) => {
+//   try {
+//     const recipe_id = req.params.recipeId;
+//     const recipe = await user_utils.getRecipeById(recipe_id);
+//     if (recipe) {
+//       res.status(200).send(recipe);
+//     } else {
+//       res.status(404).send("Recipe not found");
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
 router.get('/MyRecipes', async (req, res, next) => {
-  try {
-    const recipe_id = req.params.recipeId;
-    const recipe = await user_utils.getRecipeById(recipe_id);
-    if (recipe) {
-      res.status(200).send(recipe);
-    } else {
-      res.status(404).send("Recipe not found");
-    }
-  } catch (error) {
-    next(error);
+  try{
+    const user_id = req.session.user_id;
+    const recipes_id = await user_utils.getAllRecipesIDsByUsername(user_id);
+    let recipes_id_array = recipes_id.map(element => element.recipe_id);
+    const results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_array);
+    res.status(200).send({ recipes: results, status: 200, success: true });
+  } catch(error){
+    next(error); 
   }
 });
-
 
 
 

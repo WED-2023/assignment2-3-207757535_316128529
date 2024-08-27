@@ -71,17 +71,23 @@ async function insertRecipe(username, title, readyInMinutes, image, aggregateLik
     await DButils.execQuery(query);
   }
 
-  async function getAllRecipesByUsername(username) {
-    // Prepare the SQL query
-    const query = `
-      SELECT *
-      FROM myrecipes
-      where username ='${username}'`;
+//   async function getAllRecipesByUsername(username) {
+//     // Prepare the SQL query
+//     const query = `
+//       SELECT *
+//       FROM myrecipes
+//       where username ='${username}'`;
   
-    // Execute the query with the provided username
-    const recipes = await DButils.execQuery(query);
-    return recipes;
-}
+//     // Execute the query with the provided username
+//     const recipes = await DButils.execQuery(query);
+//     return recipes;
+// }
+
+
+async function getAllRecipesIDsByUsername(user_id){
+  const recipes_id = await DButils.execQuery(`SELECT recipe_id FROM myrecipes WHERE username='${user_id}'`);
+  return recipes_id;
+  }
 
   async function getRecipeById(recipe_id) {
         // Prepare the SQL query
@@ -109,7 +115,7 @@ async function insertRecipe(username, title, readyInMinutes, image, aggregateLik
 
 
 exports.getRecipeById = getRecipeById
-exports.getAllRecipesByUsername = getAllRecipesByUsername
+exports.getAllRecipesIDsByUsername = getAllRecipesIDsByUsername
 exports.insertRecipe = insertRecipe  
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
