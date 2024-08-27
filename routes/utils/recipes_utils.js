@@ -15,7 +15,7 @@ async function getRecipeInformation(recipe_id) {
             includeNutrition: false,
             apiKey: process.env.spooncular_apiKey,
            
-        }
+            }
     });}
 
 async function getRandomRecipes(number) {
@@ -28,19 +28,19 @@ async function getRandomRecipes(number) {
         }
     });}
 
-async function complexSearch(query, cuisine, diet, intolerances, sort, number ) {
-    return await axios.get(`${api_domain}/complexSearch`, {
-        params: {
-            query: query,
-            cuisine: cuisine,
-            diet: diet,
-            intolerances: intolerances,
-            sort: sort,
-            includeNutrition: false,
-            instructionsRequired: true,
-            apiKey: process.env.spooncular_apiKey,
-            number: number
-        }
+    async function complexSearch(query, cuisine, diet, intolerances, sort, number ) {
+        return await axios.get(`${api_domain}/complexSearch`, {
+            params: {
+                query: query,
+                cuisine: cuisine,
+                diet: diet,
+                intolerances: intolerances,
+                sort: sort,
+                includeNutrition: false,
+                instructionsRequired: true,
+                apiKey: process.env.spooncular_apiKey,
+                number: number
+      }
     });}
 
 async function getRecipePreviewByID(recipe_id) {
@@ -71,7 +71,7 @@ async function getRecipePreviewsByIDs(recipe_ids) {
   }
   
   
-async function getRecipeFullDetailsByID(recipe_id) {
+  async function getRecipeFullDetailsByID(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions, servings  } = recipe_info.data;
     extendedIngredients = extendedIngredients.map(ingredient => ({
@@ -83,7 +83,6 @@ async function getRecipeFullDetailsByID(recipe_id) {
     step: step.step
   }));
 
- 
     return {
         id: id,
         title: title,
@@ -119,14 +118,14 @@ async function getRecipeFullDetailsByID(recipe_id) {
     }
 
 
-    async function searchRecipePreview(query, cuisine, diet, intolerances, sort, number) {
-        let recipes_info = await complexSearch(query, cuisine, diet, intolerances, sort, number);
-        let recipeIds = recipes_info.data.results.map(recipe => recipe.id);
-    
-        let recipePreviews = await Promise.all(recipeIds.map(id => getRecipePreviewByID(id)));
-    
-        return recipePreviews;
-    }
+        async function searchRecipePreview(query, cuisine, diet, intolerances, sort, number) {
+            let recipes_info = await complexSearch(query, cuisine, diet, intolerances, sort, number);
+            let recipeIds = recipes_info.data.results.map(recipe => recipe.id);
+        
+            let recipePreviews = await Promise.all(recipeIds.map(id => getRecipePreviewByID(id)));
+        
+            return recipePreviews;
+        }
 exports.getRecipePreviewsByIDs = getRecipePreviewsByIDs
 exports.searchRecipePreview = searchRecipePreview
 exports.getRandomRecipePreview = getRandomRecipePreview;
