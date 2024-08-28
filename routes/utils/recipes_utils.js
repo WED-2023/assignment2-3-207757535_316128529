@@ -1,6 +1,8 @@
 const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
 require('dotenv').config();
+const DButils = require("./DButils");
+
 
 
 /**
@@ -69,7 +71,40 @@ async function getRecipePreviewsByIDs(recipe_ids) {
       throw error;
     }
   }
-  
+ 
+  async function getMyRecipePreviewsByID(recipeId) {
+    const user_recipe = await DButils.execQuery(`SELECT * FROM myrecipes WHERE recipe_id='${recipeId}'`);
+    
+    if (user_recipe.length === 0) {
+        throw new Error("Recipe not found");
+    }
+
+    let { recipe_id, recipe_title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = user_recipe[0];
+    return {
+        recipe_id: recipe_id,
+        title: recipe_title,
+        readyInMinutes: readyInMinutes,
+        image: image,
+        aggregateLikes: aggregateLikes,
+        vegan: vegan,
+        vegetarian: vegetarian,
+        glutenFree: glutenFree,
+    };
+}
+
+
+  async function getMyRecipePreviewsByIDs(recipe_ids) {
+    try {
+        const myRecipesPreviews = await Promise.all(recipe_ids.map(async (recipe_id) => {
+            return await getMyRecipePreviewsByID(recipe_id);
+        }));
+        return myRecipesPreviews;
+    } catch (error) {
+      console.error(`Error fetching recipe previews:`, error);
+      throw error;
+    }
+  }
+
   
   async function getRecipeFullDetailsByID(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
@@ -129,6 +164,8 @@ exports.searchRecipePreview = searchRecipePreview
 exports.getRandomRecipePreview = getRandomRecipePreview;
 exports.getRecipeFullDetailsByID = getRecipeFullDetailsByID;
 exports.getRecipePreviewByID = getRecipePreviewByID;
+exports.getMyRecipePreviewsByIDs = getMyRecipePreviewsByIDs;
+exports.getMyRecipePreviewsByID = getMyRecipePreviewsByID;
 
 
 
