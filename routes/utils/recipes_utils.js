@@ -78,10 +78,9 @@ async function getRecipePreviewsByIDs(recipe_ids) {
     if (user_recipe.length === 0) {
         throw new Error("Recipe not found");
     }
-
     let { recipe_id, recipe_title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = user_recipe[0];
     return {
-        recipe_id: recipe_id,
+        id: recipe_id,
         title: recipe_title,
         readyInMinutes: readyInMinutes,
         image: image,
@@ -132,6 +131,39 @@ async function getRecipePreviewsByIDs(recipe_ids) {
         summary: summary,
     }}
 
+    async function getMyRecipeFullDetailsByID(recipeId) {
+        const user_recipe = await DButils.execQuery(`SELECT * FROM myrecipes WHERE recipe_id='${recipeId}'`);
+    
+        if (user_recipe.length === 0) {
+            throw new Error("Recipe not found");
+        }
+        let { recipe_id, recipe_title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions  } = user_recipe[0];
+        if (extendedIngredients) {
+            extendedIngredients = JSON.parse(extendedIngredients);
+        }
+    
+        // Similarly, convert `analyzedInstructions` if needed
+        if (analyzedInstructions) {
+            instructions = JSON.parse(analyzedInstructions);
+            analyzedInstructions = instructions.map((instruction, index) => ({
+                step: instruction
+            }));
+        }    
+       
+        return {
+            id: recipe_id,
+            title: recipe_title,
+            readyInMinutes: readyInMinutes,
+            image: image,
+            popularity: aggregateLikes,
+            vegan: vegan,
+            vegetarian: vegetarian,
+            glutenFree: glutenFree,
+            extendedIngredients: extendedIngredients,
+            analyzedInstructions: analyzedInstructions,
+            summary: summary,
+        }}
+
     async function getRandomRecipePreview(number) {
         let recipes_info = await getRandomRecipes(number);
         let recipes = recipes_info.data.recipes;
@@ -166,6 +198,6 @@ exports.getRecipeFullDetailsByID = getRecipeFullDetailsByID;
 exports.getRecipePreviewByID = getRecipePreviewByID;
 exports.getMyRecipePreviewsByIDs = getMyRecipePreviewsByIDs;
 exports.getMyRecipePreviewsByID = getMyRecipePreviewsByID;
-
+exports.getMyRecipeFullDetailsByID = getMyRecipeFullDetailsByID;
 
 
