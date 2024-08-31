@@ -150,7 +150,7 @@ router.get('/MyRecipes', async (req, res, next) => {
     const user_id = req.session.user_id;
     const recipes_id = await user_utils.getAllRecipesIDsByUsername(user_id);
     let recipes_id_array = recipes_id.map(element => element.recipe_id);
-    const results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_array);
+    const results = await recipe_utils.getMyRecipePreviewsByIDs(recipes_id_array);
     res.status(200).send({ recipes: results, status: 200, success: true });
   } catch(error){
     next(error); 

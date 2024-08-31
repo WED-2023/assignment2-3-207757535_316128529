@@ -19,6 +19,16 @@ router.get("/preview/:recipeId", async (req, res, next) => {
   }
 });
 
+router.get("/myRecipePreview/:recipeId", async (req, res, next) => {
+  try {
+    const recipe = await recipes_utils.getMyRecipePreviewsByID(req.params.recipeId);
+    res.status(200).send({ recipePreview: recipe, status: 200, success: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 /**
  * This path returns a full details of a recipe by its id
  */
@@ -26,6 +36,18 @@ router.get("/fullDetails/:recipeId", async (req, res, next) => {
   try {
     const recipeDetails = await recipes_utils.getRecipeFullDetailsByID(req.params.recipeId);
     res.status(200).send({ recipe: recipeDetails, status: 200, success: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * This path returns a full details of a recipe by its id
+ */
+router.get("/myRecipesFullDetails/:recipeId", async (req, res, next) => {
+  try {
+    const recipeDetails = await recipes_utils.getMyRecipeFullDetailsByID(req.params.recipeId);
+    res.status(200).send({ recipe: recipeDetails, status: 200, success: true });
   } catch (error) {
     next(error);
   }
