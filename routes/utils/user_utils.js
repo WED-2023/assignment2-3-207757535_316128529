@@ -64,7 +64,7 @@ async function getViewedRecipes(user_id, recipes_id){
 
 async function insertRecipe(username, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions, serving) {
     const query = `
-      INSERT INTO MyRecipes (recipe_title, readyInMinutes, recipe_image, aggregateLikes, vegan, vegetarian, glutenFree, summary, analyzedInstructions, extendedIngredients, serving, username)
+      INSERT INTO MyRecipes (recipe_title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, summary, analyzedInstructions, extendedIngredients, serving, username)
       VALUES ('${title}', ${readyInMinutes}, '${image}', ${aggregateLikes}, ${vegan}, ${vegetarian}, ${glutenFree}, '${summary}', '${JSON.stringify(analyzedInstructions)}', '${JSON.stringify(extendedIngredients)}', '${serving}', '${username}')
     `;
     
