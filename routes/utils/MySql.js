@@ -6,9 +6,9 @@ const config={
 connectionLimit:4,
   host: 'localhost',//"localhost"
   user: 'root',//"root"
-  password: "I29B07D98",
+  password: "2721997Dz!",
   database:"recipes_website",
-  port: 3308
+  port: 3306
 }
 const pool = new mysql.createPool(config);
 
