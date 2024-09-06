@@ -6,7 +6,6 @@ const bcrypt = require("bcrypt");
 
 router.post("/Register", async (req, res, next) => {
   try {
-
     let user_details = {
       user_name: req.body.user_name,
       first_name: req.body.first_name,
@@ -15,7 +14,6 @@ router.post("/Register", async (req, res, next) => {
       password: req.body.password,
       email: req.body.email,
       profilePic: req.body.profilePic
-
     }
     let users = [];
     users = await DButils.execQuery("SELECT user_name from users");
@@ -63,8 +61,6 @@ router.post("/Login", async (req, res, next) => {
     }
     // Set cookie
     req.session.user_id = user.user_name;
-
-
     // return cookie
     res.status(200).send({ message: "login succeeded", success: true });
   } catch (error) {

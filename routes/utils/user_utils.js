@@ -71,18 +71,6 @@ async function insertRecipe(username, title, readyInMinutes, image, aggregateLik
     await DButils.execQuery(query);
   }
 
-//   async function getAllRecipesByUsername(username) {
-//     // Prepare the SQL query
-//     const query = `
-//       SELECT *
-//       FROM myrecipes
-//       where username ='${username}'`;
-  
-//     // Execute the query with the provided username
-//     const recipes = await DButils.execQuery(query);
-//     return recipes;
-// }
-
 
 async function getAllRecipesIDsByUsername(user_id){
   const recipes_id = await DButils.execQuery(`SELECT recipe_id FROM myrecipes WHERE username='${user_id}'`);
