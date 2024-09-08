@@ -107,7 +107,7 @@ async function getRecipePreviewsByIDs(recipe_ids) {
   
   async function getRecipeFullDetailsByID(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
-    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions  } = recipe_info.data;
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions, servings  } = recipe_info.data;
     extendedIngredients = extendedIngredients.map(ingredient => ({
         name: ingredient.name,
         amount: ingredient.amount,
@@ -122,13 +122,14 @@ async function getRecipePreviewsByIDs(recipe_ids) {
         title: title,
         readyInMinutes: readyInMinutes,
         image: image,
-        popularity: aggregateLikes,
+        aggregateLikes: aggregateLikes,
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree,
         extendedIngredients: extendedIngredients,
         analyzedInstructions: steps,
         summary: summary,
+        servings: servings
     }}
 
     async function getMyRecipeFullDetailsByID(recipeId) {
@@ -137,7 +138,7 @@ async function getRecipePreviewsByIDs(recipe_ids) {
         if (user_recipe.length === 0) {
             throw new Error("Recipe not found");
         }
-        let { recipe_id, recipe_title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions  } = user_recipe[0];
+        let { recipe_id, recipe_title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions, servings  } = user_recipe[0];
         if (extendedIngredients) {
             extendedIngredients = JSON.parse(extendedIngredients);
         }
@@ -146,7 +147,7 @@ async function getRecipePreviewsByIDs(recipe_ids) {
         if (analyzedInstructions) {
             instructions = JSON.parse(analyzedInstructions);
             analyzedInstructions = instructions.map((instruction, index) => ({
-                step: instruction
+            step: instruction
             }));
         }    
        
@@ -155,13 +156,14 @@ async function getRecipePreviewsByIDs(recipe_ids) {
             title: recipe_title,
             readyInMinutes: readyInMinutes,
             image: image,
-            popularity: aggregateLikes,
+            aggregateLikes: aggregateLikes,
             vegan: vegan,
             vegetarian: vegetarian,
             glutenFree: glutenFree,
             extendedIngredients: extendedIngredients,
             analyzedInstructions: analyzedInstructions,
             summary: summary,
+            servings: servings
         }}
 
     async function getRandomRecipePreview(number) {
@@ -175,7 +177,7 @@ async function getRecipePreviewsByIDs(recipe_ids) {
                 title: title,
                 readyInMinutes: readyInMinutes,
                 image: image,
-                popularity: aggregateLikes,
+                aggregateLikes: aggregateLikes,
                 vegan: vegan,
                 vegetarian: vegetarian,
                 glutenFree: glutenFree,
