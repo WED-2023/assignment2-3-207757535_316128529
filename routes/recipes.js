@@ -35,7 +35,7 @@ router.get("/myRecipePreview/:recipeId", async (req, res, next) => {
 router.get("/fullDetails/:recipeId", async (req, res, next) => {
   try {
     const recipeDetails = await recipes_utils.getRecipeFullDetailsByID(req.params.recipeId);
-    res.status(200).send({ recipe: recipeDetails, status: 200, success: true });
+    res.status(200).send({ recipe: recipeDetails, status: 200, success: true });
   } catch (error) {
     next(error);
   }
