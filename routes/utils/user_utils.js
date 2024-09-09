@@ -43,25 +43,27 @@ async function justWatched(recipe_id, user_id){
     await DButils.execQuery(`INSERT INTO lastviewedrecipes VALUES ('${user_id}','${recipe_id}')`);
   }
 }
-async function isViewd(user_id, recipe_id) {
-  try {
-    const result = await DButils.execQuery(`SELECT * FROM lastviewedrecipes WHERE user_name = "${user_id}" AND recipe_id = '${recipe_id}'`);
 
-    // Check if the result contains any rows, meaning the recipe was viewed
-    if (result.length > 0) {
-      return true;  // Recipe was viewed
-    } else {
-      return false; // Recipe was not viewed
-    }
-  } catch (error) {
-    throw new Error('Database query error');
+  async function isRecipeViewed(user_id, recipe_id){
+       let userArrayViewed = await DButils.execQuery(`SELECT * FROM lastviewedrecipes WHERE user_name='${user_id}' AND recipe_id='${recipe_id}'`);
+       if(userArrayViewed.length > 0){
+        return true;
+       }
+       else{
+        return false;
+       }
   }
-}
-
-
-
-  
-
+    
+  async function isRecipeLiked(user_id, recipe_id){
+    let userArrayViewed = await DButils.execQuery(`SELECT * FROM favoriterecipes WHERE user_name='${user_id}' AND recipe_id='${recipe_id}'`);
+    if(userArrayViewed.length > 0){
+     return true;
+    }
+    else{
+     return false;
+    }
+ }
+ 
 async function insertRecipe(username, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients, summary, analyzedInstructions, serving) {
     const query = `
       INSERT INTO MyRecipes (recipe_title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, summary, analyzedInstructions, extendedIngredients, serving, username)
@@ -101,7 +103,7 @@ async function getAllRecipesIDsByUsername(user_id){
         return recipe;
       }
 
-exports.isViewd =isViewd
+
 exports.getRecipeById = getRecipeById
 exports.getAllRecipesIDsByUsername = getAllRecipesIDsByUsername
 exports.insertRecipe = insertRecipe  
@@ -109,4 +111,6 @@ exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.getLastThreeViewedRecipes = getLastThreeViewedRecipes;
 exports.updateLastViewedRecipe = updateLastViewedRecipe;
+exports.isRecipeLiked = isRecipeLiked;
 exports.justWatched = justWatched;
+exports.isRecipeViewed = isRecipeViewed;

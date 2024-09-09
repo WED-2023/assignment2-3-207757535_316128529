@@ -50,10 +50,22 @@ router.get('/favorites', async (req,res,next) => {
   }
 });
 
+router.get('/isLikedRecipe/:recipeId', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const recipe_id = req.params.recipeId;
+    let isLiked = await user_utils.isRecipeLiked(user_id, recipe_id);
+    res.status(200).send({liked: isLiked, status: 200, success: true });
+  } catch(error){
+    next(error);
+  }
+});
+
 router.get('/lastViewed', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipes_id = await user_utils.getLastThreeViewedRecipes(user_id);
+    const isViewed = [true, true, true];
     let recipes_id_int_array = [];
     if (recipes_id.length > 0) {
       const recipes_id_string_array = recipes_id.map(id => id.toString());
@@ -61,17 +73,17 @@ router.get('/lastViewed', async (req,res,next) => {
     }
     let results = [];
     results = await recipe_utils.getRecipePreviewsByIDs(recipes_id_int_array);
-    res.status(200).send({ recipes: results, status: 200, success: true });
+    res.status(200).send({ recipes: results, viewed: isViewed, status: 200, success: true });
   } catch(error){
     next(error);
   }
 });
-router.get('/isViewed/:recipeId', async (req,res,next) => {
-  try{
-    const recipe = req.params.recipeId;
-    const user_id = req.session.user_id;
-    const isViewed = await user_utils.isViewd(user_id, recipe);
 
+router.get('/isViewedRecipe/:recipeId', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const recipe_id = req.params.recipeId;
+    let isViewed = await user_utils.isRecipeViewed(user_id, recipe_id);
     res.status(200).send({viewed: isViewed, status: 200, success: true });
   } catch(error){
     next(error);
