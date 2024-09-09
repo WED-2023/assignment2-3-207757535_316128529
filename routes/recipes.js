@@ -56,8 +56,7 @@ router.get("/myRecipesFullDetails/:recipeId", async (req, res, next) => {
 router.get("/random", async (req, res, next) => {
   try {
     const recipes = await recipes_utils.getRandomRecipePreview(req.query.number);
-    const isViewed = await user_utils.getViewedRecipes(req.session.user_id, recipes);
-    res.status(200).send({ randomRecipes: recipes, viewed: isViewed, status: 200, success: true });
+    res.status(200).send({ randomRecipes: recipes, status: 200, success: true });
   } catch (error) {
     next(error);
 }

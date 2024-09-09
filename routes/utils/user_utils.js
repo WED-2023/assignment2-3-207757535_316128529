@@ -43,22 +43,22 @@ async function justWatched(recipe_id, user_id){
     await DButils.execQuery(`INSERT INTO lastviewedrecipes VALUES ('${user_id}','${recipe_id}')`);
   }
 }
+async function isViewd(user_id, recipe_id) {
+  try {
+    const result = await DButils.execQuery(`SELECT * FROM lastviewedrecipes WHERE user_name = "${user_id}" AND recipe_id = '${recipe_id}'`);
 
-async function getViewedRecipes(user_id, recipes_id){
-  let viewed_array = [];
-  const recipes_id_array = recipes_id.map(element => element.id);
-  let user_viewed = null;
-  for (let i = 0; i < recipes_id_array.length; i++){
-     user_viewed = await DButils.execQuery(`SELECT * FROM lastviewedrecipes WHERE user_name='${user_id}' AND recipe_id='${recipes_id_array[i]}'`);
-     if(user_viewed.length === 1){
-      viewed_array[i] = true;
-     }
-     else{
-      viewed_array[i] = false;
-     }
+    // Check if the result contains any rows, meaning the recipe was viewed
+    if (result.length > 0) {
+      return true;  // Recipe was viewed
+    } else {
+      return false; // Recipe was not viewed
+    }
+  } catch (error) {
+    throw new Error('Database query error');
   }
-  return viewed_array;
-  }
+}
+
+
 
   
 
@@ -101,7 +101,7 @@ async function getAllRecipesIDsByUsername(user_id){
         return recipe;
       }
 
-
+exports.isViewd =isViewd
 exports.getRecipeById = getRecipeById
 exports.getAllRecipesIDsByUsername = getAllRecipesIDsByUsername
 exports.insertRecipe = insertRecipe  
@@ -109,5 +109,4 @@ exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.getLastThreeViewedRecipes = getLastThreeViewedRecipes;
 exports.updateLastViewedRecipe = updateLastViewedRecipe;
-exports.getViewedRecipes = getViewedRecipes;
 exports.justWatched = justWatched;
