@@ -4,6 +4,16 @@ const MySql = require("../routes/utils/MySql");
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcrypt");
 
+/**
+ * Handles user registration.
+ * @route POST /Register
+ * @param {Object} req - The request object containing user details in the body.
+ * @param {Object} res - The response object used to send a response.
+ * @param {Function} next - The next middleware function.
+ * @returns {Object} - Returns a success message if the registration is successful.
+ * @throws {Object} - Throws a 409 status error if the username is already taken.
+ * @throws {Object} - Throws a 500 status error for internal server issues.
+ */
 router.post("/Register", async (req, res, next) => {
   try {
     let user_details = {
@@ -42,6 +52,15 @@ router.post("/Register", async (req, res, next) => {
 }});
 
 
+/**
+ * Handles user login.
+ * @route POST /Login
+ * @param {Object} req - The request object containing user credentials in the body.
+ * @param {Object} res - The response object used to send a response.
+ * @param {Function} next - The next middleware function.
+ * @returns {Object} - Returns a success message if login is successful.
+ * @throws {Object} - Throws a 401 status error if the username or password is incorrect.
+ */
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
@@ -68,6 +87,13 @@ router.post("/Login", async (req, res, next) => {
   }
 });
 
+/**
+ * Handles user logout.
+ * @route POST /Logout
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object used to send a response.
+ * @returns {Object} - Returns a success message if logout is successful.
+ */
 router.post("/Logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
   res.send({ success: true, message: "logout succeeded" });
