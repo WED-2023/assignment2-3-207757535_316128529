@@ -123,7 +123,7 @@ router.get('/lastViewed', async (req,res,next) => {
  * @returns {Object} - Returns whether the recipe has been viewed or not.
  * @throws {Object} - Throws an error if the check cannot be performed.
  */
-router.get('/isViewedRecipe/:recipeId', async (req,res,next) => {
+router.get('/isViewed/:recipeId', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipe_id = req.params.recipeId;
